@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() => runApp(const MyApp());
 
@@ -14,8 +14,38 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
+  var _totalScore = 0;
 
-  void _answerQuestion() {
+  final List<Map<String, Object>> _questions = [
+      {
+        'questionText': 'What\'s your favorite color?',
+        'answers': [
+          {'text': 'Black', 'score': 10},
+          {'text': 'Green', 'score': 5},
+          {'text': 'White', 'score': 3},
+          {'text': 'Green', 'score': 1}
+        ],
+      },
+      {
+        'questionText': 'What\'s your favorite animal?',
+        'answers': [
+          {'text': 'Snake', 'score': 10},
+          {'text': 'Rabbit', 'score': 5},
+          {'text': 'Elephant', 'score': 3},
+          {'text': 'Lion', 'score': 1}
+        ],
+      },
+      {
+        'questionText': 'Who is your favorite coder?',
+        'answers': [
+          {'text': 'Karel', 'score': 1},
+          {'text': 'Ben', 'score': 1},
+        ],
+      },
+    ];
+
+  void _answerQuestion(int score) {
+    _totalScore += score;
     setState(() {
       _questionIndex++;
     });
@@ -23,10 +53,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      'What\'s your favorite color?',
-      'What\'s your favorite animal?'
-    ];
+    
 
     return MaterialApp(
       home: Scaffold(
@@ -40,25 +67,13 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            Question(
-              questionText: questions[_questionIndex],
-            ),
-            Answer(
-              buttonText: 'Button 1',
-              selectHandler: _answerQuestion,
-            ),
-            Answer(
-              buttonText: 'Button 2',
-              selectHandler: _answerQuestion,
-            ),
-            Answer(
-              buttonText: 'Button 3',
-              selectHandler: _answerQuestion,
-            ),
-          ],
-        ),
+        body: _questionIndex < _questions.length
+        ? Quiz(
+            answerQuestion: _answerQuestion,
+            questionIndex: _questionIndex,
+            questions: _questions,
+          )
+        : const Result()
       ),
     );
   }
